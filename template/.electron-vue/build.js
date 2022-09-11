@@ -12,6 +12,7 @@ const { spawn } = require('child_process')
 {{/if_eq}}
 const webpack = require('webpack')
 const Listr = require('listr')
+const Multispinner = require('multispinner')
 
 {{#if_eq builder 'packager'}}const buildConfig = require('./build.config'){{/if_eq}}
 const mainConfig = require('./webpack.main.config')
@@ -46,7 +47,7 @@ async function build () {
 
   let results = ''
 
-  const tasks = new Listr(
+  const tasksList = new Listr(
     [
       {
         title: 'building master process',
@@ -78,7 +79,7 @@ async function build () {
     { concurrent: 2 }
   )
 
-  await tasks
+  await tasksList
     .run()
     .then(() => {
       process.stdout.write('\x1B[2J\x1B[0f')
